@@ -15,6 +15,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+
         //hide status bar
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
