@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".JoinRoomActivity">
+    tools:context=".screens.JoinRoomActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -124,7 +124,7 @@
         android:fontFamily="@font/jura_bold"
         android:paddingHorizontal="30dp"
         android:paddingVertical="18dp"
-        android:text="Начать игру"
+        android:text="Присоединиться"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="26sp"

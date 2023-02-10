@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -9,24 +11,34 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.GromkiVopros"
         tools:targetApi="31">
         <activity
-            android:name=".GameRulesActivity"
+            android:name=".screens.CheckAnswerActivity"
             android:exported="false" />
         <activity
-            android:name=".JoinRoomActivity"
+            android:name=".screens.WaitForStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.GameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.GameRulesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.JoinRoomActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".CreateRoomActivity"
+            android:name=".screens.CreateRoomActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".MainActivity"
+            android:name=".screens.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".screens.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
