@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,31 +26,23 @@ class CreateRoomActivity : AppCompatActivity() {
     lateinit var usersList: ArrayList<UserModal>
     lateinit var dbRef: DatabaseReference
 
+    //icons
     var usersIconsList = listOf<Int>(
-        R.drawable.icon1,
-        R.drawable.icon2,
-        R.drawable.icon3,
-        R.drawable.icon4,
-        R.drawable.icon5,
-        R.drawable.icon6,
-        R.drawable.icon7,
-        R.drawable.icon8,
-        R.drawable.icon9,
-        R.drawable.icon10,
-        R.drawable.icon11,
-        R.drawable.icon12,
-        R.drawable.icon13,
-        R.drawable.icon14,
-        R.drawable.icon15,
-        R.drawable.icon16
+        R.drawable.icon1, R.drawable.icon2, R.drawable.icon3, R.drawable.icon4,
+        R.drawable.icon5, R.drawable.icon6, R.drawable.icon7, R.drawable.icon8,
+        R.drawable.icon9, R.drawable.icon10, R.drawable.icon11, R.drawable.icon12,
+        R.drawable.icon13, R.drawable.icon14, R.drawable.icon15, R.drawable.icon16
     )
+
     var usersIconsUsedList = mutableListOf<Int>()
 
+    //random int
     fun rand(from: Int, to: Int) : Int {
         val random = Random()
         return random.nextInt(to - from) + from
     }
 
+    //getting item from collection
     fun <T> Collection<T>.filterNotIn(collection: Collection<T>): Collection<T> {
         val set = collection.toSet()
         return filterNot { set.contains(it) }
@@ -74,9 +67,8 @@ class CreateRoomActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        //Generate game code
+        //Getting room code
         val mTextView = findViewById<TextView>(R.id.text_roomCode);
-
         val intent = getIntent();
         var room_code = intent.getStringExtra("room_code")
         mTextView.text = room_code
@@ -100,6 +92,7 @@ class CreateRoomActivity : AppCompatActivity() {
         mAdapter = Adapter(usersList, this)
         mRecyclerView.adapter = mAdapter
 
+        //connecting to database
         val database = Firebase.database
         database.reference.child("rooms").child(room_code.toString()).child("users").addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -122,6 +115,13 @@ class CreateRoomActivity : AppCompatActivity() {
             }
 
         })
+
+        //go to GameActivity
+        val mGame = findViewById<Button>(R.id.button_startGame)
+        mGame.setOnClickListener{
+            database.reference.child("rooms").child(room_code.toString()).child("started").setValue("1")
+            startActivity(Intent(this, GameActivity::class.java))
+        }
 
     }
 

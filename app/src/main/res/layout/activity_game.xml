@@ -12,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
+        android:visibility="invisible"
         android:background="@drawable/button_green"
         android:fontFamily="@font/jura_bold"
         android:paddingHorizontal="30dp"
@@ -30,6 +31,7 @@
         android:id="@+id/input_userAnswer"
         android:layout_width="0dp"
         android:layout_height="66dp"
+        android:visibility="invisible"
 
         android:background="@drawable/input_transparent40"
         android:ems="10"
@@ -50,6 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:visibility="invisible"
         android:layout_marginTop="14dp"
         android:fontFamily="@font/jura_bold"
         android:text="Введите ответ"
@@ -98,6 +101,7 @@
         android:id="@+id/textView_questionNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
 
         android:layout_marginTop="24dp"
         android:text="1 вопрос"
@@ -114,6 +118,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
+        android:visibility="invisible"
         android:layout_marginTop="14dp"
         android:text="01:00"
         android:gravity="center"
@@ -133,6 +138,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
+        android:visibility="invisible"
         android:text="Сколько пальцев на ногах у кошки? "
         android:textSize="26sp"
         android:textColor="@color/white"
@@ -142,5 +148,34 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toBottomOf="@+id/timer" />
+
+    <TextView
+        android:id="@+id/sound_textView"
+        android:layout_width="0dp"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:text="Убедитесь, что вы в наушниках"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:textColor="@color/teal_200"
+        android:fontFamily="@font/jura_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/digit_textView"
+        android:textColor="@color/teal_200"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:fontFamily="@font/jura_bold"
+        android:textSize="300sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

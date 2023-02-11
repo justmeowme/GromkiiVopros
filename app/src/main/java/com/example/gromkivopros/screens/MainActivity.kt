@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //random int
         fun rand(from: Int, to: Int) : Int {
             val random = Random()
             return random.nextInt(to - from) + from
@@ -50,15 +51,11 @@ class MainActivity : AppCompatActivity() {
             //    }
             //}
 
+            //connecting to database and creating a room
             val database = Firebase.database.getReference("rooms")
+            database.child(room_code).setValue(mapOf("room_code" to room_code, "users" to {}, "started" to 0, "current_time" to 60000, "current_question" to 1, "correct_answers" to 0))
 
-            database.child(room_code).setValue(mapOf("room_code" to room_code, "users" to {})).addOnSuccessListener {
-                Toast.makeText(this, "Data added", Toast.LENGTH_LONG).show()
-            }.addOnFailureListener{
-                Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show()
-            }
-
-
+            //putting room code to next intent
             var intent = Intent(this, CreateRoomActivity::class.java)
             intent.putExtra("room_code", room_code)
             startActivity(intent)

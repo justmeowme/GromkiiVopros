@@ -43,21 +43,29 @@ class JoinRoomActivity : AppCompatActivity() {
             return (1..length).map { allowedChars.random() }.joinToString("")
         }
 
+        //we need add new member to room only once
         var added_once = 0;
 
+
         mJoin_room.setOnClickListener{
+            //getting nickname and room code
             val user_nickname = mUser_nickname.text.toString().trim()
             val room_code = mRoom_code.text.toString().trim()
+
+            //putting code to next activity
             val intent = Intent(this, WaitForStartActivity::class.java)
             intent.putExtra("room_code", room_code)
 
+            //connecting to database
             val database = Firebase.database
             database.reference.child("rooms").addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var data = snapshot.children
+                    //looking for the correct key
                     data.forEach{
                         var key = it.key.toString()
 
+                        //adding member to room
                         if (key==room_code && added_once==0){
                             added_once = 1
                             database.getReference("rooms").child(room_code).child("users").updateChildren(mapOf("user"+getRandomString(8) to user_nickname)).addOnSuccessListener {
