@@ -15,10 +15,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".screens.CorrectAnswerActivity"
+            android:name=".screens.StartAnimationActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.GameAnimationActivity"
+            android:name=".screens.CorrectAnswerActivity"
             android:exported="false" />
         <activity
             android:name=".screens.CheckAnswerActivity"

@@ -1,10 +1,12 @@
 package com.example.gromkivopros.screens
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gromkivopros.R
@@ -77,6 +79,13 @@ class CheckAnswerActivity : AppCompatActivity() {
                 Log.d("error", "error in users receiver")
             }
         })
+
+        //BUTTON NEXT
+        val mButton = findViewById<Button>(R.id.checkAnswer)
+        mButton.setOnClickListener{
+            startActivity(Intent(this, CorrectAnswerActivity::class.java))
+        }
+
     }
 
     //GET RANDOM INT

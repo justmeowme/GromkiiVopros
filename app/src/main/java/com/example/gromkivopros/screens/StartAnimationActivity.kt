@@ -7,21 +7,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.gromkivopros.R
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class GameAnimationActivity : AppCompatActivity() {
+class StartAnimationActivity : AppCompatActivity() {
 
     //HERE ARE ANIMATIONS FOR START ACTIVITY
 
@@ -31,7 +26,7 @@ class GameAnimationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game_animation)
+        setContentView(R.layout.activity_start_animation)
 
         //HIDE STATUS BAR
         window.setFlags(
@@ -51,24 +46,17 @@ class GameAnimationActivity : AppCompatActivity() {
         val mText = findViewById<TextView>(R.id.sound_textView);
         val mProgress = findViewById<ProgressBar>(R.id.progressBar)
 
+        mText.visibility = View.VISIBLE
+        mProgress.visibility = View.INVISIBLE
+
         //INITIALISE INTENT
         val intent = Intent(this, GameActivity::class.java)
 
         //INITIAL ANIMATIONS
-        database.reference.child("rooms").child(roomCode.toString()).addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val data = snapshot.child("started").value.toString()
-                if (data=="1"){
-                    database.getReference("rooms").child(roomCode.toString()).child("started").setValue("playing")
-                    mProgress.visibility = View.INVISIBLE
-                    digitsAnimations(mText, intent)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("error", "cannot connect to database")
-            }
-        })
+        database.getReference("rooms").child(roomCode.toString()).child("started").setValue("playing")
+        mProgress.visibility = View.INVISIBLE
+        mText.visibility = View.VISIBLE
+        digitsAnimations(mText, intent)
 
     }
 
@@ -85,7 +73,8 @@ class GameAnimationActivity : AppCompatActivity() {
     // DIGITS ANIMATIONS
     // P.S I KNOW THAT HANDLER INSIDE ANOTHER HANDLER IS A BAD WAY TO DO AN ANIMATION, BUT HAVE NO IDEA HOW TO DO IT IN OTHER WAY
     fun digitsAnimations(mText: TextView, intent: Intent){
-        mText.isVisible = true
+        mText.visibility = View.VISIBLE
+
         val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_out)
         mText.startAnimation(animation)
         var flag = 1
@@ -94,11 +83,16 @@ class GameAnimationActivity : AppCompatActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
                 Handler(Looper.getMainLooper()).postDelayed({
                     Handler(Looper.getMainLooper()).postDelayed({
-                        if (flag==1){
-                            startActivity(intent)
-                            flag = 0;
-                        }
-
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (flag==1){
+                                startActivity(intent)
+                                flag = 0;
+                            }
+                        }, 3000)
+                        mText.text = "Начали!"
+                        mText.textSize = 40F
+                        val animationDigit = AnimationUtils.loadAnimation(this, R.anim.zoom_out)
+                        mText.startAnimation(animationDigit)
 
                     }, 1000)
 
@@ -121,6 +115,6 @@ class GameAnimationActivity : AppCompatActivity() {
             val animationDigit = AnimationUtils.loadAnimation(this, R.anim.zoom_out_for_digit)
             mText.startAnimation(animationDigit)
 
-        }, 3500)
+        }, 4000)
     }
 }

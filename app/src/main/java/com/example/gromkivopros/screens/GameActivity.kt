@@ -56,6 +56,12 @@ class GameActivity : AppCompatActivity() {
         val mTextInfo = findViewById<TextView>(R.id.textView6)
         val mProgress = findViewById<ProgressBar>(R.id.progressBar)
 
+        mTimer.visibility = View.VISIBLE
+        mQuestionNumber.visibility = View.VISIBLE
+        mAnswer.visibility = View.VISIBLE
+        mSubmitAnswer.visibility = View.VISIBLE
+        mTextInfo.visibility = View.VISIBLE
+
 
         //SUBMIT ANSWER
         mSubmitAnswer.setOnClickListener{
@@ -107,17 +113,21 @@ class GameActivity : AppCompatActivity() {
 
 
         //GAME TIMER
-        object : CountDownTimer(76000, 1000) {
+        object : CountDownTimer(77000, 1000) {
             override fun onTick(m: Long) {
-                if ((m / 1000).toInt() > 15){
+                if ((m / 1000).toInt() >= 15){
 
-                    if ((m / 1000 - 15).toString() == "60") {
+                    if ((m / 1000 - 15).toInt() >= 60) {
                         mTimer.text = "01:00"
                     } else {
                         if ((m / 1000 - 15).toInt() < 10) {
                             mTimer.text = "00:0${(m / 1000 - 15)}"
                         } else {
-                            mTimer.text = "00:${(m / 1000 - 15)}"
+                            if ((m / 1000-15).toInt() < 0){
+                                mTimer.text = "00:00"
+                            } else{
+                                mTimer.text = "00:${(m / 1000 - 15)}"
+                            }
                         }
                     }
                 } else{
@@ -127,10 +137,10 @@ class GameActivity : AppCompatActivity() {
                     if ((m / 1000).toString() == "60") {
                         mTimer.text = "01:00"
                     } else {
-                        if ((m / 1000).toInt() < 10) {
-                            mTimer.text = "00:0${(m / 1000)}"
+                        if ((m / 1000).toInt() < 9) {
+                            mTimer.text = "00:0${(m / 1000)+1}"
                         } else {
-                            mTimer.text = "00:${(m / 1000)}"
+                            mTimer.text = "00:${(m / 1000)+1}"
                         }
                     }
                 }

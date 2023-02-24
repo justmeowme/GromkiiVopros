@@ -67,7 +67,7 @@ class CreateRoomActivity : AppCompatActivity() {
         //CREATE ROOM
         val database = Firebase.database
         if (roomCode != null) {
-            database.getReference("rooms").child(roomCode.toString()).setValue(mapOf("room_code" to roomCode, "host" to "", "users" to {}, "started" to 0, "current_question" to 1, "answers" to {}, "questions" to {}))
+            database.getReference("rooms").child(roomCode.toString()).setValue(mapOf("room_code" to roomCode, "host" to "", "users" to {}, "started" to 0, "current_question" to 1, "correct_answers" to 0, "answers" to {}, "questions" to {}))
         }
 
 
@@ -138,7 +138,7 @@ class CreateRoomActivity : AppCompatActivity() {
             editor.apply()
             database.reference.child("rooms").child(roomCode.toString()).child("started").setValue("1")
             database.reference.child("rooms").child(roomCode.toString()).child("host").setValue(roomHost.text.toString())
-            startActivity(Intent(this, GameAnimationActivity::class.java))
+            startActivity(Intent(this, StartAnimationActivity::class.java))
         }
 
     }

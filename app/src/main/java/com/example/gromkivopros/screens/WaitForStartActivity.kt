@@ -64,7 +64,7 @@ class WaitForStartActivity : AppCompatActivity() {
 
         //CONNECT TO FIREBASE AND WAIT FOR GAME TO START
         val database = Firebase.database
-        val intent = Intent(this, GameAnimationActivity::class.java)
+        val intent = Intent(this, StartAnimationActivity::class.java)
 
         database.reference.child("rooms").child(roomCode.toString()).addValueEventListener(object:
             ValueEventListener {
