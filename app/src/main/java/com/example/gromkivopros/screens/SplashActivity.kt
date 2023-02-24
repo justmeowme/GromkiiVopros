@@ -11,26 +11,28 @@ import android.widget.ImageView
 import com.example.gromkivopros.R
 
 class SplashActivity : AppCompatActivity() {
+
+    //IT'S JUST A SPLASH WITH ANIMATION
+    //IT INSTANTLY REDIRECT US TO MainActivity.kt
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-
-        //hide status bar
+        //HIDE STATUS BAR
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        //logo animation
+        //LOGO ANIMATION
         val mLogo = findViewById<ImageView>(R.id.logo);
         val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_in)
         mLogo.startAnimation(animation)
 
-        //go to main activity
+        //GO TO MainActivity.kt
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
         }, 4000)
 
 

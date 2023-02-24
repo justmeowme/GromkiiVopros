@@ -1,140 +1,147 @@
 package com.example.gromkivopros.screens
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import com.example.gromkivopros.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class GameActivity : AppCompatActivity() {
 
-    var mMediaPlayer: MediaPlayer? = null
+    //IT IS MAIN GAME ACTIVITY
+    //QUESTION SHOWS UP  AT HOST SCREEN AND IS HIDDEN ON OTHER SCREENS
+    //MUSIC PLAYS FOR 1m 3s TILL THE END OF TIMER
+    //WHEN TIMER ENDS USERS GO TO CheckAnswerActivity.kt
+
+    private val database = Firebase.database
+
+    private var mMediaPlayer: MediaPlayer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        //hide status bar
+        //HIDE STATUS BAR
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        playSound()
+        //GET HOST AND ROOM CODE
+        val sharedPreference =  getSharedPreferences("shared", Context.MODE_PRIVATE)
+        val host = sharedPreference.getString("isHost", "no").toString()
+        val nickname = sharedPreference.getString("nickname", "user").toString()
+        val roomCode = sharedPreference.getString("roomCode", "ERROR")
 
-        //initial text animation
-        val mText = findViewById<TextView>(R.id.sound_textView);
-        mText.isVisible = true
-        val animation = AnimationUtils.loadAnimation(this, R.anim.zoom_out)
-        mText.startAnimation(animation)
-
-        //initialize values
-        val mQuestionNumber = findViewById<TextView>(R.id.textView_questionNumber)
+        //UI ELEMENTS
         val mTimer = findViewById<TextView>(R.id.timer)
+        val mQuestionNumber = findViewById<TextView>(R.id.textView_questionNumber)
         val mQuestion = findViewById<TextView>(R.id.question)
-        val mAns = findViewById<TextView>(R.id.textView6)
-        val mAnswer = findViewById<TextView>(R.id.input_userAnswer)
+        val mAnswer = findViewById<EditText>(R.id.input_userAnswer)
         val mSubmitAnswer = findViewById<Button>(R.id.button_submitAnswer)
-
-        //digits animation
-        Handler(Looper.getMainLooper()).postDelayed({
-            Handler(Looper.getMainLooper()).postDelayed({
-                Handler(Looper.getMainLooper()).postDelayed({
-                    Handler(Looper.getMainLooper()).postDelayed({
-
-                        //make game items visible
-                        mText.textSize = 0F
-                        mText.visibility = View.GONE
-                        mQuestionNumber.visibility = View.VISIBLE
-                        mTimer.visibility = View.VISIBLE
-                        mQuestion.visibility = View.VISIBLE
-                        mAns.visibility = View.VISIBLE
-                        mAnswer.visibility = View.VISIBLE
-                        mSubmitAnswer.visibility = View.VISIBLE
-
-                        //setting timer
-                        object : CountDownTimer(60000, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                if ((millisUntilFinished/1000).toString()=="60"){
-                                    mTimer.setText("01:00")
-                                } else{
-                                    if ((millisUntilFinished/1000).toString().toInt() < 10){
-                                        mTimer.setText("00:0"+(millisUntilFinished / 1000))
-                                    } else{
-                                        mTimer.setText("00:"+(millisUntilFinished / 1000))
-                                    }
-                                }
-                            }
-                            override fun onFinish() {
-                                //setting second timer
-                                stopSound()
-                                mQuestion.setText("У вас есть 15 секунд, чтобы написать ответ. Обсуждать уже нельзя!")
-                                object : CountDownTimer(15000, 1000) {
-                                    override fun onTick(millisUntilFinished: Long) {
-                                        if ((millisUntilFinished/1000).toInt() < 10){
-                                            mTimer.setText("00:0"+(millisUntilFinished / 1000))
-                                        } else{
-                                            mTimer.setText("00:"+(millisUntilFinished / 1000))
-                                        }
-                                    }
-                                    override fun onFinish() {
-                                        //go to check answer screen
-                                    }
-                                }.start()
-                            }
-                        }.start()
+        val mWait = findViewById<TextView>(R.id.wait_answer)
+        val mTextInfo = findViewById<TextView>(R.id.textView6)
+        val mProgress = findViewById<ProgressBar>(R.id.progressBar)
 
 
-                    }, 1000)
-                    mText.text = "1"
-                    mText.textSize = 300F
-                    val animation_digit = AnimationUtils.loadAnimation(this, R.anim.zoom_out_for_digit)
-                    mText.startAnimation(animation_digit)
-                }, 1000)
-                mText.text = "2"
-                mText.textSize = 300F
-                val animation_digit = AnimationUtils.loadAnimation(this, R.anim.zoom_out_for_digit)
-                mText.startAnimation(animation_digit)
-            }, 1000)
-            mText.text = "3"
-            mText.textSize = 300F
-            val animation_digit = AnimationUtils.loadAnimation(this, R.anim.zoom_out_for_digit)
-            mText.startAnimation(animation_digit)
-        }, 3500)
-
-
-
-    }
-
-    fun playSound() {
-        if (mMediaPlayer == null) {
-            mMediaPlayer = MediaPlayer.create(this, R.raw.sound)
-            mMediaPlayer!!.isLooping = true
-            mMediaPlayer!!.start()
-        } else mMediaPlayer!!.start()
-    }
-
-    fun stopSound() {
-        if (mMediaPlayer != null) {
-            mMediaPlayer!!.stop()
-            mMediaPlayer!!.release()
-            mMediaPlayer = null
+        //SUBMIT ANSWER
+        mSubmitAnswer.setOnClickListener{
+            val answer = mAnswer.text.toString()
+            database.getReference("rooms").child(roomCode.toString()).child("answers").updateChildren(mapOf(nickname to answer))
+            mAnswer.visibility = View.INVISIBLE
+            mSubmitAnswer.visibility = View.INVISIBLE
+            mTextInfo.visibility = View.INVISIBLE
+            mWait.visibility = View.VISIBLE
+            mProgress.visibility = View.VISIBLE
         }
+
+
+        //CHECK IF HOST
+        if (host=="no"){
+            mQuestion.visibility = View.INVISIBLE
+        } else{
+            mQuestion.visibility = View.VISIBLE
+        }
+
+
+        //INITIALISE INTENT
+        val intent = Intent(this, CheckAnswerActivity::class.java)
+
+
+        //PUT QUESTION
+        database.reference.child("rooms").child(roomCode.toString()).addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val questions = snapshot.child("questions").children
+                val questionNumber = snapshot.child("current_question").value.toString()
+
+                var count = 1
+                questions.forEach{
+                    if (it.key.toString()!="0" && it.key.toString()!="arity"){
+                        if (count.toString()==questionNumber){
+                            val question = it.key.toString()
+                            mQuestion.text = question
+                            mQuestionNumber.text = "$questionNumber/7"
+                        }
+                        count += 1
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("error", "cannot connect to database")
+            }
+        })
+
+
+        //GAME TIMER
+        object : CountDownTimer(76000, 1000) {
+            override fun onTick(m: Long) {
+                if ((m / 1000).toInt() > 15){
+
+                    if ((m / 1000 - 15).toString() == "60") {
+                        mTimer.text = "01:00"
+                    } else {
+                        if ((m / 1000 - 15).toInt() < 10) {
+                            mTimer.text = "00:0${(m / 1000 - 15)}"
+                        } else {
+                            mTimer.text = "00:${(m / 1000 - 15)}"
+                        }
+                    }
+                } else{
+                    mQuestion.text = "У вас есть 15 секунд, чтобы написать ответ. Обсуждать его уже нельзя"
+                    mQuestion.visibility = View.VISIBLE
+
+                    if ((m / 1000).toString() == "60") {
+                        mTimer.text = "01:00"
+                    } else {
+                        if ((m / 1000).toInt() < 10) {
+                            mTimer.text = "00:0${(m / 1000)}"
+                        } else {
+                            mTimer.text = "00:${(m / 1000)}"
+                        }
+                    }
+                }
+            }
+
+            override fun onFinish() {
+                startActivity(intent)
+            }
+        }.start()
+
+
     }
 
-    fun pauseSound() {
-        if (mMediaPlayer?.isPlaying == true) mMediaPlayer?.pause()
-    }
 }

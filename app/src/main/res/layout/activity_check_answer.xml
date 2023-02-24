@@ -7,6 +7,27 @@
     android:background="@drawable/bg"
     tools:context=".screens.CheckAnswerActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="45dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="45dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
     <TextView
         android:id="@+id/textView_questionNumber2"
         android:layout_width="wrap_content"
@@ -27,38 +48,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:text="Узнать ответ"
-        android:textAllCaps="false"
-        android:fontFamily="@font/jura_bold"
-        android:textSize="26sp"
-        android:paddingVertical="18dp"
-        android:background="@drawable/button_green"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/nextQuestion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
         android:background="@drawable/button_green"
         android:fontFamily="@font/jura_bold"
         android:paddingVertical="18dp"
         android:text="Далее"
-        android:visibility="invisible"
         android:textAllCaps="false"
         android:textSize="26sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkAnswer" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+        app:layout_constraintStart_toStartOf="@+id/guideline12"
+        app:layout_constraintTop_toTopOf="@+id/guideline14" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_allAnswers"
+        tools:listitem="@layout/answer_recyclerview_item"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline14"
+        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+        app:layout_constraintStart_toStartOf="@+id/guideline12"
+        app:layout_constraintTop_toBottomOf="@+id/textView_questionNumber2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
